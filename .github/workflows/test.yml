@@ -1,0 +1,35 @@
+name: AI Code Inspector (Python)
+
+# 触发条件：当有人向 main 分支提交 Pull Request 时触发
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 虚拟服务器上运行
+
+    steps:
+    # 1. 把你的代码拉取到虚拟服务器上
+    - name: Check out the code
+      uses: actions/checkout@v4
+
+    # 2. 安装 Python 环境
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10" # 你可以改成你实际使用的 Python 版本
+
+    # 3. 安装你项目需要的依赖包
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # 如果你有 requirements.txt，系统会自动安装里面的包
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # 安装 pytest，这是 Python 最常用的测试框架
+        pip install pytest
+
+    # 4. 运行测试！
+    - name: Run tests
+      run: |
+        pytest
